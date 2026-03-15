@@ -32,7 +32,7 @@ explore → product? → propose → specs ∥ design → tasks → apply → ve
 
 It's a sub-agent specialized in **product discovery and requirement clarification**. Its job is to transform your incomplete intent into a stable product brief that `sdd-propose` can consume with minimal guesswork.
 
-The key difference from a generic PM questionnaire: `sdd-product` reads the exploration results first. It knows your codebase, your existing models, your current flows. So instead of asking *"who is the primary user?"* when your code already has three user roles, it asks *"should clinic admins or reception staff trigger the review request — the permissions model differs significantly."*
+**Important:** `sdd-product` is designed to run *after* `sdd-explore`. It reads the exploration artifact to understand the current system before asking you anything. This is what separates it from a generic PM questionnaire — it knows your codebase, your models, your existing flows. It can still run standalone via `/sdd-product`, but with less context and therefore less targeted questions.
 
 When it has enough clarity, it produces a decision-grade brief (problem, actors, workflow, scope, rules, edge cases, success criteria) and hands off to `sdd-propose`. When material ambiguity remains, it returns `blocked` with targeted questions, the orchestrator relays them to you, and the phase resumes with your answers — without ever breaking the single-thread conversation model.
 
@@ -78,9 +78,9 @@ Two questions. One round. A proposal that reflects what you actually wanted.
 
 ### What it reuses (zero reinvention)
 
-- **Same envelope contract.** Returns `{status, executive_summary, detailed_report, artifacts, next_recommended, risks}` like every other skill. No new fields, no schema changes.
+- **Compatible envelope.** Returns `{status, executive_summary, detailed_report, artifacts, next_recommended, risks}` — the same structure used by existing ATL skills. No new fields, no schema changes.
 - **Same persistence model.** Uses `engram`, `openspec`, `hybrid`, or `none` with the same mode resolution rules from `_shared/persistence-contract.md`. Artifact naming follows the deterministic `sdd/{change-name}/product` convention.
-- **Same skill structure.** YAML frontmatter, numbered steps, inline engram calls (`mem_search`, `mem_save`, `mem_get_observation`), mandatory persist step. Follows every convention established in v3.3.x.
+- **Same skill structure.** YAML frontmatter, numbered steps, inline engram calls (`mem_search`, `mem_save`, `mem_get_observation`), mandatory persist step. Compatible with the conventions established in ATL v3.3.x.
 - **Same orchestrator mediation.** The sub-agent never talks to the user directly. It returns structured output; the orchestrator relays and resumes. The single-thread conversation model is preserved.
 - **Same skill-registry loading.** Step 1 loads the registry from engram or `.atl/skill-registry.md`, just like every other SDD skill.
 
