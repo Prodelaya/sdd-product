@@ -1,6 +1,6 @@
 # ORCHESTRATOR-DELTAS.md — Orchestrator changes for sdd-product
 
-These changes are **agent-agnostic**. Apply them to whichever file holds your orchestrator instructions:
+These changes are **agent-agnostic** and aligned with **ATL v4.0.0** conventions (pre-resolved skill registry, inline persistence instructions, word-budgeted artifacts). Apply them to whichever file holds your orchestrator instructions:
 
 | Agent | File |
 |---|---|
