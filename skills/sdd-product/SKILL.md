@@ -9,7 +9,8 @@ description: >
 license: MIT
 metadata:
   author: Pablo Laya (prodelaya)
-  version: "1.0"
+  version: "1.1"
+  compatible-with: "agent-teams-lite >= 4.0.0"
   inspired-by: Gentleman Programming (https://github.com/Gentleman-Programming/agent-teams-lite)
 ---
 
@@ -34,20 +35,13 @@ From the orchestrator:
 
 # Steps
 
-## Step 1 — Load Skill Registry
+## Step 1 — Load Pre-Resolved Skills
 
-Do this FIRST, before any other work.
+The orchestrator pre-resolves skill paths and passes them in your launch prompt. You do NOT search for the skill registry yourself.
 
-Try engram first:
-```
-mem_search(query: "skill-registry", project: "{project}") → if found, mem_get_observation(id) for the full registry
-```
+If the orchestrator provided skill paths: read and follow any skills whose triggers match your task. Also read any project convention files included.
 
-If engram not available or not found: read `.atl/skill-registry.md` from the project root.
-
-If neither exists: proceed without skills (not an error).
-
-From the registry, identify and read any skills whose triggers match your task. Also read any project convention files listed in the registry.
+If no skill paths were provided: proceed without skills (not an error).
 
 ## Step 2 — Resolve Persistence Mode
 
@@ -92,7 +86,7 @@ Based on your investigation and the user's request, do ONE of:
 
 ### Path A — Sufficient clarity exists
 
-Write the full product brief covering:
+Write the full product brief covering (target: **500–800 words** — concise enough to minimize downstream token cost, detailed enough to de-risk the proposal):
 
 - **Problem statement**: What problem are we solving and for whom?
 - **Primary actor(s)**: Who uses this feature?
@@ -155,10 +149,8 @@ mem_save(
 )
 ```
 `topic_key` enables upserts — saving again on resume updates, not duplicates.
-(See `skills/_shared/engram-convention.md` for advanced operations.)
 
 If mode is **openspec** or **hybrid**:
-Read and follow `skills/_shared/openspec-convention.md`.
 Write to `openspec/changes/{change-name}/product.md`.
 
 If mode is **none**:
@@ -166,7 +158,9 @@ Return results inline only. Do not write project artifacts.
 
 ## Step 6 — Return Result
 
-Return the structured envelope:
+See `skills/_shared/sdd-phase-common.md` for the standard return envelope and field definitions.
+
+Return:
 
 ```json
 {
@@ -202,4 +196,5 @@ When `status` is `"ok"`:
 - Do return `blocked` when user answers are required to proceed responsibly.
 - Do persist partial work every round so the phase can be resumed cleanly.
 - Skill loading is handled in Step 1 — follow any loaded skills and project conventions.
+- Keep the product brief within the 500–800 word budget. Verbose artifacts compound token cost across every downstream phase.
 - If you discover the request is purely technical (no product ambiguity), say so in `executive_summary` and recommend skipping to `sdd-explore` or `sdd-propose` directly.
