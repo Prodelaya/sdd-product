@@ -1,6 +1,6 @@
 # ORCHESTRATOR-DELTAS.md — Orchestrator changes for sdd-product
 
-These changes are **agent-agnostic** and aligned with **ATL v4.0.0** conventions (pre-resolved skill registry, inline persistence instructions, word-budgeted artifacts). Apply them to whichever file holds your orchestrator instructions:
+These changes are **agent-agnostic** and aligned with **ATL v4.1.0** conventions (delegate-first orchestration, pre-resolved skill registry, inline persistence instructions, word-budgeted artifacts). Apply them to whichever file holds your orchestrator instructions:
 
 | Agent | File |
 |---|---|
@@ -116,10 +116,11 @@ If a sub-agent returns `status: "blocked"`:
 
 1. Parse the `detailed_report` for the `## Blocking Questions` section.
 2. Present those questions to the user in the main thread — do NOT rephrase or answer them yourself.
-3. When the user replies, relaunch the **same** sub-agent with:
+3. When the user replies, re-delegate the **same** phase (prefer `delegate` over `task` per delegate-first policy) with:
    - The user's answers.
    - The artifact reference (`sdd/{change-name}/{phase}`) so it can resume from its partial work.
    - The same artifact store mode.
+   - Pre-resolved skill path: `SKILL: Load \`{resolved-path}\` before starting.`
 4. Repeat until the sub-agent returns `status: "ok"` or `status: "warning"`.
 5. Then proceed to the next phase in the dependency graph.
 
