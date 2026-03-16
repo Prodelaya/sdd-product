@@ -10,7 +10,7 @@ license: MIT
 metadata:
   author: Pablo Laya (prodelaya)
   version: "1.1"
-  compatible-with: "agent-teams-lite >= 4.0.0"
+  compatible-with: "agent-teams-lite >= 4.1.0"
   inspired-by: Gentleman Programming (https://github.com/Gentleman-Programming/agent-teams-lite)
 ---
 
